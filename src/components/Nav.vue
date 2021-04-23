@@ -8,7 +8,7 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item" v-if='user'>
-          <router-link to='/' class="nav-link active" aria-current="page" href="#">Home</router-link>
+          <router-link to='/' class="nav-link active" aria-current="page" href="#">Bank Info</router-link>
         </li>
       </ul>
       <form class="d-flex" v-if='!user'>
@@ -33,6 +33,7 @@ export default{
     // const response = await axios.post('signout');
     // console.log(response);
     localStorage.removeItem('token');
+    location.href='/login';
     this.$router.push('/login');
     }
   }

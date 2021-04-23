@@ -5,21 +5,24 @@
         <!-- Sign Up form -->
         <form action="" @submit.prevent="handleSubmit" class="Signup">
           <h3>Sign Up Now!!!</h3>
+          <ul v-if='error' class="bg-danger">
+            <li v-for='(er,errorind) in error' v-bind:key='errorind'>{{er[0]}}</li>
+          </ul>
           <div class="form-group">
               <label for="name">Name</label>
-            <input type="text" class="form-control" placeholder="Name" v-model='name' required>
+            <input type="text" class="form-control" placeholder="Name" v-model='name'>
           </div>
           <div class="form-group">
               <label for="email">Email</label>
-            <input type="text" class="form-control" placeholder="Enter Email" v-model='email' required>
+            <input type="text" class="form-control" placeholder="Enter Email" v-model='email'>
           </div>      
           <div class="form-group">
               <label for="psw">Password</label>
-            <input type="password" class="form-control" placeholder="Enter Password"  v-model='password' required> 
+            <input type="password" class="form-control" placeholder="Enter Password"  v-model='password'> 
           </div>   
           <div class="form-group">
             <label for="psw-repeat">Confirm Password</label>
-            <input type="password" class="form-control" placeholder="Repeat Password"  v-model='password_confirmation' required>
+            <input type="password" class="form-control" placeholder="Repeat Password"  v-model='password_confirmation'>
           </div>
           
           <button type="submit" class="btn btn-success">Signup</button>
@@ -41,6 +44,7 @@ export default{
 			email:'',
 			password:'',
 			password_confirmation:'',
+      error:null,
 		}
 	},
 	methods:{
@@ -49,7 +53,14 @@ export default{
 			name:this.name,email:this.email,password:this.password,password_confirmation:this.password_confirmation
 		});
 		console.log(response);
-		this.$router.push('/login');
+    if (response.data.error) {
+    this.error=response.data.error;
+   }else{
+    localStorage.setItem('token',response.data.access_token);
+    this.$router.push('/login');
+    //this.$router.push('/');
+   }
+		
 		}
 	}
 }

@@ -5,14 +5,16 @@
         <!-- Sign Up form -->
         <form action="" @submit.prevent="handleSubmit" class="Signup">
           <h3>Sign In  Now!!!</h3>
-          
+          <ul v-if='error' class="bg-danger">
+            <li v-for='(er,errorind) in error' v-bind:key='errorind'>{{er[0]}}</li>
+          </ul>
           <div class="form-group">
               <label for="email">Email</label>
-            <input type="text" class="form-control" placeholder="Enter Email" v-model='email' required>
+            <input type="text" class="form-control" placeholder="Enter Email" v-model='email'>
           </div>      
           <div class="form-group">
               <label for="psw">Password</label>
-            <input type="password" class="form-control" placeholder="Enter Password"  v-model='password' required> 
+            <input type="password" class="form-control" placeholder="Enter Password"  v-model='password'> 
           </div>   
           
           
@@ -33,6 +35,7 @@ export default{
 		return {
 			password:'',
 			email:'',
+      error:null,
 		}
 	},
 	methods:{
@@ -40,8 +43,15 @@ export default{
 		const response = await axios.post('signin',{email:this.email,password:this.password
 		});
 		console.log(response);
-		localStorage.setItem('token',response.data.access_token);
-		this.$router.push('/');
+
+   if (response.data.error) {
+    this.error=response.data.error;
+   }else{
+    localStorage.setItem('token',response.data.access_token);
+    location.href='/';
+    //this.$router.push('/');
+   }
+		
 		}
 	}
 }

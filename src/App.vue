@@ -1,28 +1,40 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+   <Nav :user='user'/>
+   <router-view :user='user'/>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import Nav from './components/Nav.vue'
+import axios from  'axios'
 export default {
   name: 'App',
-  components: {
-    HelloWorld
+  components:{
+  Nav,
+  },
+  data(){
+    return {
+      user:null, 
+    }
+  },
+  async created(){
+    
+    const response = await axios.get('user');
+    console.log(response);
+    //this.$router.push('/');
+    this.user =response.data;
+    
+  },
+  methods:{
+    async handleClick(){
+    const response = await axios.post('signout');
+    console.log(response);
+    localStorage.removeItem('token');
+    this.$router.push('/login');
+    }
   }
+
 }
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>

@@ -56,7 +56,7 @@ export default{
     if (response.data.error) {
     this.error=response.data.error;
    }else{
-    localStorage.setItem('token',response.data.access_token);
+    alert(response.data.message);
     this.$router.push('/login');
     //this.$router.push('/');
    }

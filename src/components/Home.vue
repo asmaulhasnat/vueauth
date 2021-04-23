@@ -20,8 +20,9 @@
             <th>Branch</th>
             <th>Account Type</th>
             <th>Swift Code</th>
+            <th>Store Id</th>
             <th>Route No</th>
-            <th>Action</th>
+            <th v-if="user && user.user_type =='admin'">Action</th>
           </tr>
         </thead>
         <tbody>
@@ -35,8 +36,9 @@
             <td v-if="item.account_type == 2">Current</td>
             <td v-if="item.account_type == 3">Joint Account</td>
             <td>{{ item.swift_code }}</td>
+            <td>{{ item.store_id }}</td>
             <td>{{ item.route_no }}</td>
-            <td>
+            <td v-if="user && user.user_type =='admin'">
               <b-button
                 style="width:100%;margin:2px"
                 type="button"
@@ -54,8 +56,9 @@
       </table>
     </div>
 
-    <div>
+    <div v-if="showModal==true">
       <b-modal id="modal-1" title="Bank Information">
+        <p id="hide_modal"></p>
         <ul v-if='error' class="bg-danger">
             <li v-for='(er,errorind) in error' v-bind:key='errorind'>{{er[0]}}</li>
           </ul>
@@ -167,7 +170,7 @@
             <small id="emailHelp" class="form-text text-muted"></small>
           </div>
 
-          <button
+          <button 
             type="submit"
             @click.prevent="saveBankInformation"
             class="btn btn-primary pull-right"
@@ -212,6 +215,7 @@ export default {
       store_id_error: "",
       item:{},
       error:null,
+      showModal:false,
     };
   },
   async created() {
@@ -223,6 +227,7 @@ export default {
   methods: {
     bank_account_show(item) {
       this.error=null;
+      this.showModal=true;
       console.log(item);
       this.account_name = item.account_name;
       this.financial_organization_id = item.financial_organization_id;
@@ -249,8 +254,10 @@ export default {
         store_id:this.store_id,
       });
        console.log(response);
-       if (response.status == 200 && response.data.error != undefined) {
+       if (response.status == 200 && !response.data.error) {
+        this.showModal=false;
         this.allInformation();
+        alert(response.data.message);
        }
        if (response.data.error) {
         this.error=response.data.error;
